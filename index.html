@@ -5,7 +5,8 @@
         <link rel="stylesheet" type="text/css" href="css/reset.css">
 		<link rel="stylesheet" type="text/css" href="css/element-designer.css" />
 		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-		<script type="text/javascript" src="js/template.js"></script>
+		<script type="text/javascript" src="js/config.js"></script>
+        <script type="text/javascript" src="js/template.js"></script>
         <script type="text/javascript" src="js/view.js"></script>
         <script type="text/javascript" src="js/controller.js"></script>
         <script type="text/javascript" src="js/app.js"></script>
@@ -13,10 +14,14 @@
 	<body>
         <div class="target" data-id="1">Target 1</div>
         <div class="target target-modifier" data-id="2">Target 2</div>
+        <div class="target target-modifier" data-id="3">Target 3</div>
+        <div class="container"></div>
         <script type="text/javascript">
-            $('.target').click(function(){
-                $(this).ElementDesigner();
-            });
+        $(document).ElementDesigner({
+            container: '.container',
+            targetSelector: '.target',
+            disabledStyles: ['position', 'box-sizing']
+        });
         </script>
 	</body>
 </html>
