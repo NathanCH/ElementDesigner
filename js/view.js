@@ -1,9 +1,10 @@
 (function(window, $) {
     'use strict';
 
-    function View(template, config) {
-        this.template = template;
+    function View(config, template, helper) {
         this.config = config;
+        this.template = template;
+        this.helper = helper;
         this.$elm = $(this.config.targetSelector);
         this.$container = $(this.config.container);
     }
@@ -14,6 +15,10 @@
 
     View.prototype._itemContent = function(elm) {
         return $(elm).text();
+    }
+
+    View.prototype._getStyles = function(elm) {
+        return this.helper.readCSS(elm);
     }
 
     View.prototype.render = function(view, data) {
@@ -31,10 +36,11 @@
         var self = this;
         switch (event) {
             case 'newDesigner':
-                self.$elm.on('click', function(){
+                self.$elm.on('click', function() {
                     handler({
                         id: self._itemId(this),
-                        content: self._itemContent(this)
+                        content: self._itemContent(this),
+                        styles: self._getStyles(this)
                     });
                 });
             break;

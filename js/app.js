@@ -6,8 +6,9 @@
      */
     function ElementDesigner(elm, config) {
         this.config = new app.Config(config);
+        this.helper = new app.Helper();
         this.template = new app.Template();
-        this.view = new app.View(this.template, this.config);
+        this.view = new app.View(this.config, this.template, this.helper);
         this.controller = new app.Controller(this.view);
     }
 

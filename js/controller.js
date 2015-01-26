@@ -5,7 +5,7 @@
         var self = this;
         self.view = view;
 
-        self.view.bind('newDesigner', function(response){
+        self.view.bind('newDesigner', function(response) {
             self.view.render('createDesigner', response);
         });
     }
