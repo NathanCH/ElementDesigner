@@ -5,8 +5,12 @@
         var self = this;
         self.view = view;
 
-        self.view.bind('newDesigner', function(response) {
-            self.view.render('createDesigner', response);
+        self.view.bind('createDesigner', function(data) {
+            self.view.render('createDesigner', data);
+        });
+
+        self.view.bind('createUI', function(data){
+            self.view.render('createUI', data);
         });
     }
 

@@ -2,6 +2,7 @@
     'use strict';
 
     function Config(config){
+        this.appName = 'Element Designer';
         this.path = '/2015/element-designer/';
         this.container = config.container;
         this.disabledStyles = config.disabledStyles;
