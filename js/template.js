@@ -10,7 +10,7 @@
         +       '</div>';
 
         this.header
-        =       '<div class="element-designer__header>'
+        =       '<div class="element-designer__header">'
         +           '<span class="element-designer__title">'
         +               '{{title}}'
         +           '</span>'
@@ -32,7 +32,7 @@
         +       '</button>';
 
         this.closeButton
-        =       '<button class="element-designer__button">'
+        =       '<button class="element-designer__button" data-id="{{close-button-id}}">'
         +           '{{close-text}}'
         +       '</button>';
     }
@@ -53,11 +53,13 @@
     Template.prototype.createHeader = function(data) {
         var template = this.header;
         var title = data.title;
+        var closeButtonID = data.id;
         var closeButton = this.closeButton;
         var closeText = 'X';
 
         template = template.replace('{{title}}', title);
         template = template.replace('{{close-button}}', closeButton);
+        template = template.replace('{{close-button-id}}', closeButtonID);
         template = template.replace('{{close-text}}', closeText);
 
         return template;

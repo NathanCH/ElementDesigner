@@ -12,6 +12,10 @@
         self.view.bind('createUI', function(data){
             self.view.render('createUI', data);
         });
+
+        self.view.bind('closeDesigner', function(data){
+            self.view.render('closeDesigner', data);
+        });
     }
 
     window.app = window.app || {};

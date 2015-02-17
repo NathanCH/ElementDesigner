@@ -37,11 +37,19 @@
                 self.unbind('createDesigner');
                 self.$container.append(self.template.createDesigner(data));
                 $.publish('designerCreated');
+                console.log(data);
             },
             createUI: function() {
-                var elm = $('.element-designer[data-id="'+self.cachedID+'"]')
+                var elm = $('.element-designer[data-id="'+self.cachedID+'"]');
                 elm.prepend(self.template.createHeader(data));
                 elm.append(self.template.createFooter());
+            },
+            closeDesigner: function() {
+                $('.element-designer[data-id="'+self.cachedID+'"]').remove();
+                var test = $('.target[data-id="'+self.cachedID+'"]').css({
+                    'cursor' : 'pointer'
+                });
+                console.log(test);
             }
         }
 
@@ -64,7 +72,16 @@
             case 'createUI':
                 $.subscribe('designerCreated', function() {
                     handler({
-                        title: self.config.appName
+                        title: self.config.appName,
+                        id: self.cachedID
+                    });
+                });
+            break;
+
+            case 'closeDesigner':
+                self.$container.on('click', '.element-designer__button', function(){
+                    handler({
+                        id: self._itemId(this)
                     });
                 });
             break;
@@ -77,6 +94,9 @@
             case 'createDesigner':
                 self._item().off('click').css({
                     'cursor' : 'default'
+                });
+                self._item().on('click', function(){
+                    console.log('hey');
                 });
             break;
         }
