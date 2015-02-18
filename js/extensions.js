@@ -12,6 +12,10 @@
             object.on.apply(object, arguments);
         }
 
+        $.unsubscribe = function() {
+            object.off.apply(object, arguments);
+        }
+
         $.publish = function() {
             object.trigger.apply(object, arguments);
         }

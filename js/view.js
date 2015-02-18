@@ -10,6 +10,8 @@
         this.$container = $(this.config.container);
         this.cachedStyles;
         this.cachedID;
+
+        this.subscribe('createDesigner');
     }
 
     View.prototype._item = function() {
@@ -28,43 +30,30 @@
         return this.helper.readCSS(elm);
     }
 
+    View.prototype.handle = function(event, handler) {
+        handler.action.render('createDesigner', handler.data);
+    }
 
-    View.prototype.render = function(view, data) {
-        var self = this;
-        var viewType = {
-            createDesigner: function() {
-                // Allow one designer per element.
-                self.unbind('createDesigner');
-                self.$container.append(self.template.createDesigner(data));
-                $.publish('designerCreated');
-                console.log(data);
-            },
-            createUI: function() {
-                var elm = $('.element-designer[data-id="'+self.cachedID+'"]');
-                elm.prepend(self.template.createHeader(data));
-                elm.append(self.template.createFooter());
-            },
-            closeDesigner: function() {
-                $('.element-designer[data-id="'+self.cachedID+'"]').remove();
-                var test = $('.target[data-id="'+self.cachedID+'"]').css({
-                    'cursor' : 'pointer'
-                });
-                console.log(test);
-            }
+    View.prototype.subscribe = function(sub) {
+        switch(sub){
+            case 'createDesigner':
+                $.subscribe('createDesigner', this.handle);
+            break;
         }
-
-        viewType[view]();
     }
 
     View.prototype.bind = function(event, handler) {
         var self = this;
         switch (event) {
             case 'createDesigner':
-                self.$elm.on('click', function() {
-                    handler({
-                        id: self._itemId(this),
-                        content: self._itemContent(this),
-                        styles: self._getStyles(this)
+                self.$elm.off().bind('click', function() {
+                    $.publish('createDesigner', {
+                        action: self,
+                        data: {
+                            id: self._itemId(this),
+                            content: self._itemContent(this),
+                            styles: self._getStyles(this)
+                        }
                     });
                 });
             break;
@@ -92,14 +81,42 @@
         var self = this;
         switch(event) {
             case 'createDesigner':
-                self._item().off('click').css({
+                self._item().css({
                     'cursor' : 'default'
                 });
-                self._item().on('click', function(){
-                    console.log('hey');
-                });
+                self._item().unbind('click');
             break;
         }
+    }
+
+    View.prototype.render = function(view, data) {
+        var self = this;
+        var viewType = {
+            createDesigner: function() {
+                // Allow one designer per element.
+                self.unbind('createDesigner');
+                // Create designer.
+                self.$container.append(self.template.createDesigner(data));
+                $.publish('designerCreated');
+            },
+            createUI: function() {
+                var elm = $('.element-designer[data-id="'+self.cachedID+'"]');
+                // Create header and footer.
+                elm.prepend(self.template.createHeader(data));
+                elm.append(self.template.createFooter());
+            },
+            closeDesigner: function() {
+                // Rebind createDesigner on current target.
+                self.bind('createDesigner');
+                // Close and update css.
+                $('.element-designer[data-id="'+self.cachedID+'"]').remove();
+                $('.target[data-id="'+self.cachedID+'"]').css({
+                    'cursor' : 'pointer'
+                });
+            }
+        }
+
+        viewType[view]();
     }
 
     window.app = window.app || {};
