@@ -6,7 +6,6 @@ module.exports = function (grunt) {
                 files: {
                     'build/js/app.js' : [
                         'vendor/CSSUtilities.js',
-                        'vendor/Selector.js',
                         'js/helper.js',
                         'js/config.js',
                         'js/template.js',

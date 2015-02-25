@@ -3,6 +3,7 @@
 
     function View(config, template, helper) {
         this.config = config;
+        this.allowedStyles = config.allowedStyles;
         this.template = template;
         this.helper = helper;
         this.elm = this.config.targetSelector;
@@ -14,22 +15,68 @@
         this.subscribe('createDesigner');
     }
 
+    /**
+     * Return cached element or target object.
+     */
     View.prototype._item = function() {
-        return $(this.elm+'[data-id="'+this.cachedID+'"]');
+        if(typeof this.cachedID != "undefined") {
+            return $(this.elm+'[data-id="'+this.cachedID+'"]');
+        }
+        return this.$elm;
     }
 
     View.prototype._itemId = function(elm) {
         return this.cachedID = $(elm).data('id');
     }
 
-    View.prototype._itemContent = function(elm) {
-        return $(elm).text();
-    }
-
+    /**
+     * Return cached styles or read from element.
+     */
     View.prototype._getStyles = function(elm) {
-        return this.helper.readCSS(elm);
+        if(elm === undefined) {
+            return this.cachedStyles;
+        }
+
+        var styles = this.helper.readCSS(elm);
+        var order = this.allowedStyles;
+
+        // Reorder elements to match user defined settings.
+        return this._applyOrder(styles, order);
     }
 
+    /**
+     * Populate <select> element by type of content.
+     * @param object    styles     an element's styles/properties
+     * @param array     order      user defined desired order.
+     */
+    View.prototype._applyOrder = function(styles, order) {
+
+        // Get array of keys from stlyes object.
+        var styleKeys = Object.keys(styles);
+        var results = {}
+
+        // Add style properties by matching keys in order.
+        order.forEach(function(key){
+            styleKeys = styleKeys.filter(function(style){
+                if(style == key) {
+                    results[key] = styles[key];
+                }
+                else{
+                    return true;
+                }
+            })
+
+            return false;
+        });
+
+        return this.cachedStyles = results;
+    }
+
+    /**
+     * Handle pub/sub callback.
+     * @param event
+     * @param string    handler    callback's content.
+     */
     View.prototype.handle = function(event, handler) {
         handler.action.render('createDesigner', handler.data);
     }
@@ -46,12 +93,11 @@
         var self = this;
         switch (event) {
             case 'createDesigner':
-                self.$elm.off().bind('click', function() {
+                self._item().off().bind('click', function() {
                     $.publish('createDesigner', {
                         action: self,
                         data: {
                             id: self._itemId(this),
-                            content: self._itemContent(this),
                             styles: self._getStyles(this)
                         }
                     });
@@ -62,13 +108,14 @@
                 $.subscribe('designerCreated', function() {
                     handler({
                         title: self.config.appName,
-                        id: self.cachedID
+                        id: self.cachedID,
+                        styles: self._getStyles()
                     });
                 });
             break;
 
             case 'closeDesigner':
-                self.$container.on('click', '.element-designer__button', function(){
+                self.$container.on('click', '.element-designer__button.button-close', function(){
                     handler({
                         id: self._itemId(this)
                     });
@@ -91,6 +138,8 @@
 
     View.prototype.render = function(view, data) {
         var self = this;
+        var elm = $('.element-designer[data-id="'+self.cachedID+'"]');
+        var target = $('.target[data-id="'+self.cachedID+'"]');
         var viewType = {
             createDesigner: function() {
                 // Allow one designer per element.
@@ -100,19 +149,21 @@
                 $.publish('designerCreated');
             },
             createUI: function() {
-                var elm = $('.element-designer[data-id="'+self.cachedID+'"]');
-                // Create header and footer.
+                // Create header.
                 elm.prepend(self.template.createHeader(data));
+                Object.keys(data.styles).forEach(function(key){
+                    if(self.allowedStyles.indexOf(key) > -1) {
+                        elm.append(self.template.createComponent(key, data.styles[key], data));
+                    }
+                });
                 elm.append(self.template.createFooter());
             },
             closeDesigner: function() {
                 // Rebind createDesigner on current target.
                 self.bind('createDesigner');
                 // Close and update css.
-                $('.element-designer[data-id="'+self.cachedID+'"]').remove();
-                $('.target[data-id="'+self.cachedID+'"]').css({
-                    'cursor' : 'pointer'
-                });
+                target.css({ 'cursor' : 'pointer' });
+                elm.remove();
             }
         }
 

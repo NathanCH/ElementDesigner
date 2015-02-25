@@ -2,35 +2,39 @@
 	---
 */
     body{
-        margin-top: 200px;
+        background-color: #eee;
         font-family: "Open Sans";
         color: #555;
         font-size: 16px;
         line-height: 28px;
     }
     .target{
+        background-color: #e0e0e0;
         border: 1px solid grey;
         padding: 15px;
         text-align: center;
         width: 200px;
-        margin: 10px auto;
+        margin: 100px auto;
         cursor: pointer;
     }
     .target-modifier{
         border: 1px dashed #C6000A;
         font-style: italic;
+        font-family: "Cabin";
     }
     .container{
-        max-width: 425px;
-        min-width: 250px;
+        min-width: 200px;
         position: absolute;
         top: 32px;
-        right: 32px;
+        right: 46px;
     }
 	.element-designer{
+        vertical-align: top;
 		background: white;
         padding: 12px 18px;
         border-radius: 3px;
         box-shadow: 0px 0px 3px 0px rgba(0,0,0,.2);
-        margin: 5px 0;
+        margin: 0 10px 10px 0;
+        width: 200px;
+        display: inline-block;
 	}

@@ -6,7 +6,6 @@
         <link rel="stylesheet" type="text/css" href="css/element-designer.css" />
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script type="text/javascript" src="vendor/CSSUtilities.js"></script>
-        <script type="text/javascript" src="vendor/Selector.js"></script>
         <script type="text/javascript" src="js/helper.js"></script>
         <script type="text/javascript" src="js/extensions.js"></script>
         <script type="text/javascript" src="js/config.js"></script>
@@ -17,8 +16,8 @@
     </head>
     <body>
         <div class="target" data-id="1">Target 1</div>
-        <div class="target target-modifier" data-id="2">Target 2</div>
-        <div class="target target-modifier" data-id="3">Target 3</div>
+        <div class="target target-modifier" data-id="23">Target 2</div>
+        <div class="target target-modifier" data-id="54">Target 3</div>
         <div class="container"></div>
         <script type="text/javascript">
         $(document).ElementDesigner({
@@ -26,8 +25,8 @@
             targetSelector: '.target',
             allowedStyles: [
                 'border',
-                'color',
-                'font-family'
+                'font-family',
+                'font-size'
             ]
         });
         </script>

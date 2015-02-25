@@ -1,9 +1,10 @@
 (function(window, $){
     'use strict';
 
-    function Extensions(config){
+    function Extensions(){
 
-        /* Tiny jQuery pub/sub.
+        /**
+         * Tiny jQuery pub/sub.
          * https://github.com/cowboy/jquery-tiny-pubsub
          */
         var object = $({});
